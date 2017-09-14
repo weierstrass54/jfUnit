@@ -1,13 +1,17 @@
 package ru.weierstrass.pgsql;
 
+import lombok.extern.slf4j.Slf4j;
 import ru.weierstrass.db.JdbcQuery;
+import ru.weierstrass.fixture.FixtureAlreadyLoadedException;
 import ru.weierstrass.fixture.FixtureLoader;
+import ru.weierstrass.fixture.FixtureLoadingException;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+@Slf4j
 public class PgSQLFixtureLoader implements FixtureLoader<PgSQLFixture> {
 
     private final Set<String> loadedTables = new HashSet<>();
@@ -19,9 +23,9 @@ public class PgSQLFixtureLoader implements FixtureLoader<PgSQLFixture> {
     }
 
     @Override
-    public void load( PgSQLFixture fixture ) throws Exception {
+    public void load( PgSQLFixture fixture ) throws FixtureLoadingException {
         if( loadedTables.contains( fixture.getTableName() ) ) {
-            throw new Exception();
+            throw new FixtureAlreadyLoadedException( "Таблица " + fixture.getTableName() + " уже загружена." );
         }
         loadedTables.add( fixture.getTableName() );
         insert( fixture );
@@ -37,6 +41,7 @@ public class PgSQLFixtureLoader implements FixtureLoader<PgSQLFixture> {
             for( Map.Entry<String, Object> entry : row.entrySet() ) {
                 columns[i] = String.format( "\"%s\"", entry.getKey() );
                 params[i] = entry.getValue();
+                i++;
             }
             String query = String.format(
                 "INSERT INTO %s (%s) VALUES (%s)",
