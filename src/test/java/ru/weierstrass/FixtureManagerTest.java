@@ -5,7 +5,7 @@ import org.junit.Test;
 import ru.weierstrass.fixture.Fixture;
 import ru.weierstrass.exception.FixtureCircularDependencyException;
 import ru.weierstrass.fixture.FixtureManager;
-import ru.weierstrass.fixture.file.*;
+import ru.weierstrass.fixture.loadable.*;
 
 import java.io.IOException;
 import java.nio.file.Files;

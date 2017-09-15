@@ -4,7 +4,7 @@ import ru.weierstrass.fixture.Fixture;
 
 public interface LoadableToFile extends Fixture {
 
-    String getFilePath();
+    String getFileToPath();
 
     String getData();
 

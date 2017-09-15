@@ -23,7 +23,7 @@ public class FixtureLoaderToFileTest {
         String fixtureContent = "Hello, world!";
 
         LoadableToFile fixture = mock( LoadableToFile.class );
-        when( fixture.getFilePath() ).thenReturn( fixturePath.toString() );
+        when( fixture.getFileToPath() ).thenReturn( fixturePath.toString() );
         when( fixture.getData() ).thenReturn( fixtureContent );
 
         FixtureLoaderToFile loader = new FixtureLoaderToFile();
@@ -39,7 +39,7 @@ public class FixtureLoaderToFileTest {
         String fixtureContent = "Hello, world!";
 
         LoadableToFile fixture = mock( LoadableToFile.class );
-        when( fixture.getFilePath() ).thenReturn( fixturePath.toString() );
+        when( fixture.getFileToPath() ).thenReturn( fixturePath.toString() );
         when( fixture.getData() ).thenReturn( fixtureContent );
 
         FixtureLoaderToFile loader = new FixtureLoaderToFile();

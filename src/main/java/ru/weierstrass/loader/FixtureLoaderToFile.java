@@ -19,12 +19,12 @@ public class FixtureLoaderToFile implements FixtureLoader<LoadableToFile> {
 
     @Override
     public void load( LoadableToFile fixture ) throws FixtureLoadingException {
-        if( loadedFiles.contains( fixture.getFilePath() ) ) {
-            throw new FixtureAlreadyLoadedException( "Файл " + fixture.getFilePath() + " уже загружен." );
+        if( loadedFiles.contains( fixture.getFileToPath() ) ) {
+            throw new FixtureAlreadyLoadedException( "Файл " + fixture.getFileToPath() + " уже загружен." );
         }
         try {
             write( fixture );
-            loadedFiles.add( fixture.getFilePath() );
+            loadedFiles.add( fixture.getFileToPath() );
         }
         catch( Exception e ) {
             throw new FixtureLoadingException( e );
@@ -32,7 +32,7 @@ public class FixtureLoaderToFile implements FixtureLoader<LoadableToFile> {
     }
 
     private void write( LoadableToFile fixture ) throws IOException {
-        Path path = Paths.get( fixture.getFilePath() );
+        Path path = Paths.get( fixture.getFileToPath() );
         createDirectoryIfNotExists( path.getParent() );
         Files.write(
             path,
