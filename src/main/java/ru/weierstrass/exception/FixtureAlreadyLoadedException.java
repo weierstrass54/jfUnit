@@ -1,4 +1,4 @@
-package ru.weierstrass.fixture;
+package ru.weierstrass.exception;
 
 public class FixtureAlreadyLoadedException extends FixtureLoadingException {
 

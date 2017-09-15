@@ -1,38 +1,34 @@
-package ru.weierstrass.pgsql;
+package ru.weierstrass.loader;
 
-import lombok.extern.slf4j.Slf4j;
 import ru.weierstrass.db.JdbcQuery;
-import ru.weierstrass.fixture.FixtureAlreadyLoadedException;
-import ru.weierstrass.fixture.FixtureLoader;
-import ru.weierstrass.fixture.FixtureLoadingException;
+import ru.weierstrass.exception.FixtureAlreadyLoadedException;
+import ru.weierstrass.exception.FixtureLoadingException;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-@Slf4j
-public class PgSQLFixtureLoader implements FixtureLoader<PgSQLFixture> {
+abstract public class FixtureLoaderToDb<T extends LoadableToDb> implements FixtureLoader<T> {
 
     private final Set<String> loadedTables = new HashSet<>();
 
-    private final JdbcQuery jdbcQuery;
+    protected final JdbcQuery jdbcQuery;
 
-    public PgSQLFixtureLoader( JdbcQuery jdbcQuery ) {
+    protected FixtureLoaderToDb( JdbcQuery jdbcQuery ) {
         this.jdbcQuery = jdbcQuery;
     }
 
     @Override
-    public void load( PgSQLFixture fixture ) throws FixtureLoadingException {
+    public void load( T fixture ) throws FixtureLoadingException {
         if( loadedTables.contains( fixture.getTableName() ) ) {
             throw new FixtureAlreadyLoadedException( "Таблица " + fixture.getTableName() + " уже загружена." );
         }
         loadedTables.add( fixture.getTableName() );
         insert( fixture );
-        fixture.getSequences().forEach( this::resetSequence );
     }
 
-    private void insert( PgSQLFixture fixture ) {
+    protected void insert( LoadableToDb fixture ) {
         for( Map<String, Object> row : fixture.getData() ) {
             int size = row.size();
             int i = 0;
@@ -51,16 +47,6 @@ public class PgSQLFixtureLoader implements FixtureLoader<PgSQLFixture> {
             );
             jdbcQuery.insert( query, params );
         }
-    }
-
-    private void resetSequence( PgSQLFixtureSequence sequence ) {
-        String query = String.format(
-            "SELECT SETVAL( '%s', %s ) FROM %s",
-            sequence.getName(),
-            sequence.getInitialValue() != null ? sequence.getInitialValue() : "MAX( " + sequence.getSequenceColumnName() + " )",
-            sequence.getTableName()
-        );
-        jdbcQuery.execute( query );
     }
 
 }

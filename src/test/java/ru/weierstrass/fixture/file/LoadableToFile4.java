@@ -1,8 +1,8 @@
 package ru.weierstrass.fixture.file;
 
-import ru.weierstrass.file.FileFixture;
+import ru.weierstrass.loader.LoadableToFile;
 
-public class FileFixture4 implements FileFixture {
+public class LoadableToFile4 implements LoadableToFile {
 
     @Override
     public String getFilePath() {

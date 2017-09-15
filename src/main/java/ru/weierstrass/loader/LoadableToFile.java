@@ -1,8 +1,8 @@
-package ru.weierstrass.file;
+package ru.weierstrass.loader;
 
 import ru.weierstrass.fixture.Fixture;
 
-public interface FileFixture extends Fixture {
+public interface LoadableToFile extends Fixture {
 
     String getFilePath();
 

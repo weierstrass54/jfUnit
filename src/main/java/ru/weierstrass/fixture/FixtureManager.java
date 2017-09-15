@@ -2,10 +2,10 @@ package ru.weierstrass.fixture;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.weierstrass.db.JdbcQuery;
-import ru.weierstrass.file.FileFixture;
-import ru.weierstrass.file.FileFixtureLoader;
-import ru.weierstrass.pgsql.PgSQLFixture;
-import ru.weierstrass.pgsql.PgSQLFixtureLoader;
+import ru.weierstrass.loader.*;
+import ru.weierstrass.exception.FixtureCircularDependencyException;
+import ru.weierstrass.exception.FixtureLoaderNotFound;
+import ru.weierstrass.exception.FixtureLoadingException;
 
 import java.util.*;
 
@@ -103,7 +103,7 @@ public class FixtureManager {
 
     public static final class Builder {
 
-        private JdbcQuery jdbc;
+        private JdbcQuery pgSqlJdbc;
         private boolean withFile;
 
         private Builder() {
@@ -115,18 +115,18 @@ public class FixtureManager {
             return this;
         }
 
-        public Builder withJdbc( JdbcQuery query ) {
-            jdbc = query;
+        public Builder withPgSql( JdbcQuery query ) {
+            pgSqlJdbc = query;
             return this;
         }
 
         public FixtureManager build() {
             FixtureManager manager = new FixtureManager();
             if( withFile ) {
-                manager.appendLoader( FileFixture.class, new FileFixtureLoader() );
+                manager.appendLoader( LoadableToFile.class, new FixtureLoaderToFile() );
             }
-            if( jdbc != null ) {
-                manager.appendLoader( PgSQLFixture.class, new PgSQLFixtureLoader( jdbc ) );
+            if( pgSqlJdbc != null ) {
+                manager.appendLoader( LoadableToPgSql.class, new FixtureLoaderToPgSql( pgSqlJdbc ) );
             }
             return manager;
         }

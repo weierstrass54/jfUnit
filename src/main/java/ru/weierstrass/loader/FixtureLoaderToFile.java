@@ -1,9 +1,8 @@
-package ru.weierstrass.file;
+package ru.weierstrass.loader;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.weierstrass.fixture.FixtureAlreadyLoadedException;
-import ru.weierstrass.fixture.FixtureLoader;
-import ru.weierstrass.fixture.FixtureLoadingException;
+import ru.weierstrass.exception.FixtureAlreadyLoadedException;
+import ru.weierstrass.exception.FixtureLoadingException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,12 +13,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Slf4j
-public class FileFixtureLoader implements FixtureLoader<FileFixture> {
+public class FixtureLoaderToFile implements FixtureLoader<LoadableToFile> {
 
     private final Set<String> loadedFiles = new HashSet<>();
 
     @Override
-    public void load( FileFixture fixture ) throws FixtureLoadingException {
+    public void load( LoadableToFile fixture ) throws FixtureLoadingException {
         if( loadedFiles.contains( fixture.getFilePath() ) ) {
             throw new FixtureAlreadyLoadedException( "Файл " + fixture.getFilePath() + " уже загружен." );
         }
@@ -32,7 +31,7 @@ public class FileFixtureLoader implements FixtureLoader<FileFixture> {
         }
     }
 
-    private void write( FileFixture fixture ) throws IOException {
+    private void write( LoadableToFile fixture ) throws IOException {
         Path path = Paths.get( fixture.getFilePath() );
         createDirectoryIfNotExists( path.getParent() );
         Files.write(

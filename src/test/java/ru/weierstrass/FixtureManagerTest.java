@@ -3,7 +3,7 @@ package ru.weierstrass;
 import org.junit.After;
 import org.junit.Test;
 import ru.weierstrass.fixture.Fixture;
-import ru.weierstrass.fixture.FixtureCircularDependencyException;
+import ru.weierstrass.exception.FixtureCircularDependencyException;
 import ru.weierstrass.fixture.FixtureManager;
 import ru.weierstrass.fixture.file.*;
 
@@ -43,9 +43,9 @@ public class FixtureManagerTest {
 
     private Set<Class<? extends Fixture>> getSimpleFixtures() {
         return new HashSet<Class<? extends Fixture>>() {{
-            add( FileFixture1.class );
-            add( FileFixture2.class );
-            add( FileFixture4.class );
+            add( LoadableToFile1.class );
+            add( LoadableToFile2.class );
+            add( LoadableToFile4.class );
         }};
     }
 
@@ -78,9 +78,9 @@ public class FixtureManagerTest {
 
     private Set<Class<? extends Fixture>> getFixturesWithDependencies() {
         return new HashSet<Class<? extends Fixture>>() {{
-            add( FileFixture1.class );
-            add( FileFixture2.class );
-            add( FileFixture3.class );
+            add( LoadableToFile1.class );
+            add( LoadableToFile2.class );
+            add( LoadableToFile3.class );
         }};
     }
 
@@ -96,11 +96,11 @@ public class FixtureManagerTest {
 
     private Set<Class<? extends Fixture>> getFixturesWithCircularDependencies() {
         return new HashSet<Class<? extends Fixture>>() {{
-            add( FileFixture1.class );
-            add( FileFixture5.class );
-            add( FileFixture2.class );
-            add( FileFixture6.class );
-            add( FileFixture7.class );
+            add( LoadableToFile1.class );
+            add( LoadableToFile5.class );
+            add( LoadableToFile2.class );
+            add( LoadableToFile6.class );
+            add( LoadableToFile7.class );
         }};
     }
 
@@ -116,8 +116,8 @@ public class FixtureManagerTest {
 
     private Set<Class<? extends Fixture>> getFixturesWithReflectionDependencies() {
         return new HashSet<Class<? extends Fixture>>() {{
-            add( FileFixture1.class );
-            add( FileFixture8.class );
+            add( LoadableToFile1.class );
+            add( LoadableToFile8.class );
         }};
     }
 

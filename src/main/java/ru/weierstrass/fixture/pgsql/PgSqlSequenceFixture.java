@@ -1,6 +1,6 @@
-package ru.weierstrass.pgsql;
+package ru.weierstrass.fixture.pgsql;
 
-public interface PgSQLFixtureSequence {
+public interface PgSqlSequenceFixture {
 
     String getName();
 

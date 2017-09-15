@@ -3,11 +3,12 @@ package ru.weierstrass;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import ru.weierstrass.db.JdbcQuery;
-import ru.weierstrass.fixture.FixtureAlreadyLoadedException;
-import ru.weierstrass.fixture.FixtureLoadingException;
-import ru.weierstrass.pgsql.PgSQLFixture;
-import ru.weierstrass.pgsql.PgSQLFixtureLoader;
-import ru.weierstrass.pgsql.PgSQLFixtureSequence;
+import ru.weierstrass.exception.FixtureAlreadyLoadedException;
+import ru.weierstrass.exception.FixtureLoadingException;
+import ru.weierstrass.loader.FixtureLoaderToPgSql;
+import ru.weierstrass.loader.LoadableToDb;
+import ru.weierstrass.loader.LoadableToPgSql;
+import ru.weierstrass.fixture.pgsql.PgSqlSequenceFixture;
 
 import java.util.*;
 
@@ -15,7 +16,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
 @Slf4j
-public class PgSQLFixtureLoaderTest {
+public class FixtureLoaderToPgSqlTest {
 
     private class JdbcQueryProxy implements JdbcQuery {
         private List<String> queries = new ArrayList<>();
@@ -47,15 +48,15 @@ public class PgSQLFixtureLoaderTest {
 
     @Test
     public void testPgSqlLoader() throws FixtureLoadingException {
-        PgSQLFixtureSequence sequence = mock( PgSQLFixtureSequence.class );
+        PgSqlSequenceFixture sequence = mock( PgSqlSequenceFixture.class );
         when( sequence.getName() ).thenReturn( "test_table_seq" );
         when( sequence.getTableName() ).thenReturn( "test_table" );
         when( sequence.getInitialValue() ).thenReturn( 1 );
         when( sequence.getSequenceColumnName() ).thenReturn( "id" );
 
-        PgSQLFixture fixture = mock( PgSQLFixture.class );
+        LoadableToPgSql fixture = mock( LoadableToPgSql.class );
         when( fixture.getTableName() ).thenReturn( "test_table" );
-        when( fixture.getSequences() ).thenReturn( new ArrayList<PgSQLFixtureSequence>() {{
+        when( fixture.getSequences() ).thenReturn( new ArrayList<PgSqlSequenceFixture>() {{
             add( sequence );
         }} );
         when( fixture.getData() ).thenReturn( new ArrayList<Map<String, Object>>() {{
@@ -73,7 +74,7 @@ public class PgSQLFixtureLoaderTest {
             }} );
         }} );
 
-        PgSQLFixtureLoader loader = new PgSQLFixtureLoader( jdbc );
+        FixtureLoaderToPgSql loader = new FixtureLoaderToPgSql( jdbc );
 
         loader.load( fixture );
 
@@ -91,11 +92,11 @@ public class PgSQLFixtureLoaderTest {
 
     @Test( expected = FixtureAlreadyLoadedException.class )
     public void testPgSQLLoaderDuplicate() throws FixtureLoadingException {
-        PgSQLFixture fixture = mock( PgSQLFixture.class );
+        LoadableToPgSql fixture = mock( LoadableToPgSql.class );
         when( fixture.getTableName() ).thenReturn( "test_table" );
         when( fixture.getData() ).thenReturn( new ArrayList<>() );
 
-        PgSQLFixtureLoader loader = new PgSQLFixtureLoader( jdbc );
+        FixtureLoaderToPgSql loader = new FixtureLoaderToPgSql( jdbc );
 
         loader.load( fixture );
         loader.load( fixture );
